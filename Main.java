@@ -1,135 +1,193 @@
-package webBrowserHistory;
+package Stack;
+
 import java.util.Scanner;
 import java.util.Stack;
 
 public class Main {
-    private static final Stack<String> historial = new Stack<>();
-    private static final Scanner scan = new Scanner(System.in);
 
-
-    private static void mostrarEncabezado() {
-        if (historial.isEmpty()) {
-            System.out.println("\nNo hay sitio actual");
+    public static Stack<Integer> llenarStack(Stack<Integer> numeros, Scanner scan){
+        System.out.println("Ingresa el numero");
+        int number = scan.nextInt();
+        numeros.push(number);
+        System.out.println("Stack: "+numeros);
+        return numeros;
+    }
+    
+    public static int encontrarMaximo(Stack<Integer> numeros) { 
+        Stack<Integer> auxiliar = new Stack<>();
+        int maximo = numeros.peek(); 
+        
+        while (!numeros.isEmpty()) {
+            int actual = numeros.pop();
+            if (actual > maximo) {
+                maximo = actual;
+            }
+            auxiliar.push(actual);
+        }
+        
+        while (!auxiliar.isEmpty()) {
+        	numeros.push(auxiliar.pop());
+        }
+        
+        return maximo;
+    }
+    
+    public static int encontrarMinimo(Stack<Integer> numeros) {
+        Stack<Integer> auxiliar = new Stack<>();
+        int minimo = numeros.peek(); 
+        
+        while (!numeros.isEmpty()) {
+            int actual = numeros.pop();
+            if (actual < minimo) {
+            	minimo = actual;
+            }
+            auxiliar.push(actual);
+        }
+        
+        while (!auxiliar.isEmpty()) {
+        	numeros.push(auxiliar.pop());
+        }
+        
+        return minimo;
+    }
+    
+    public static int sumarElementos(Stack<Integer> numeros) {
+        if (numeros.isEmpty()) {
+            return 0;
+        }
+        
+        Stack<Integer> auxiliar = new Stack<>();
+        int suma = 0;
+        
+        while (!numeros.isEmpty()) {
+            int actual = numeros.pop();
+            suma += actual;
+            auxiliar.push(actual);
+        }
+        
+        while (!auxiliar.isEmpty()) {
+        	numeros.push(auxiliar.pop());
+        }
+        
+        return suma;
+    }
+    
+    public static void buscarElemento(Stack<Integer> numeros, Scanner scan) {
+        
+        System.out.print("Ingrese el elemento a buscar: ");
+        int elemento = scan.nextInt();
+        
+        Stack<Integer> auxiliar = new Stack<>();
+        boolean encontrado = false;
+        
+        while (!numeros.isEmpty()) {
+            int actual = numeros.pop();
+            if (actual == elemento) {
+                encontrado = true;
+            }
+            auxiliar.push(actual);
+        }
+        
+        while (!auxiliar.isEmpty()) {
+        	numeros.push(auxiliar.pop());
+        }
+        
+        if (encontrado) {
+            System.out.println("El elemento " + elemento + " SI esta presente en el stack");
         } else {
-            System.out.println("\nSitio actual: " + historial.peek());
+            System.out.println("El elemento " + elemento + " NO esta presente en el stack");
         }
     }
-
-    private static void mostrarMenu() {
-        System.out.println("\n--- MENU ---");
-        System.out.println("1. Visitar sitio web");
-        System.out.println("2. Volver al sitio anterior");
-        System.out.println("3. Buscar en el historial");
-        System.out.println("4. Ver sitio actual y cantidad de sitios");
-        System.out.println("5. Salir");
-        System.out.print("Elige una opción (1-5): ");
-    }
-
-    private static boolean procesarOpcion(String opcion) {
-        switch (opcion) {
-            case "1":
-                visitarSitio();
-                break;
-            case "2":
-                volverSitio();
-                break;
-            case "3":
-                buscarEnHistorial();
-                break;
-            case "4":
-                mostrarActualYCantidad();
-                break;
-            case "5":
-                System.out.println("Saliendo...");
-                return false;
-            default:
-                System.out.println("Opcion no valida");
-        }
-        return true;
-    }
-
-    private static void visitarSitio() {
-        System.out.print("Ingresa la URL del sitio: ");
-        String sitio = scan.nextLine().trim();
-        if (sitio.isEmpty()) {
-            System.out.println("URL no valida");
-        } else {
-            historial.push(sitio);
-            System.out.println("Visitaste: " + sitio);
-        }
-    }
-
-    private static void volverSitio() {
-        if (historial.isEmpty()) {
-            System.out.println("No hay historial");
+    
+    public static void eliminarDuplicados(Stack<Integer> numeros) {
+        if (numeros.isEmpty()) {
+            System.out.println("El stack está vacío");
             return;
         }
-        String sitioAnterior = historial.pop();
-        System.out.println("Regresaste desde: " + sitioAnterior);
-        if (!historial.isEmpty()) {
-            System.out.println("Sitio actual: " + historial.peek());
-        } else {
-            System.out.println("Historial vacio");
+        
+        Stack<Integer> auxiliar = new Stack<>();
+        Stack<Integer> unicos = new Stack<>();
+        
+        while (!numeros.isEmpty()) {
+            auxiliar.push(numeros.pop());
         }
-    }
-
-    private static void buscarEnHistorial() {
-        if (historial.isEmpty()) {
-            System.out.println("No hay historial");
-            return;
-        }
-
-        System.out.print("Ingresa el nombre o URL a buscar: ");
-        String busqueda = scan.nextLine().trim();
-
-        if (busqueda.isEmpty()) {
-            System.out.println("Entrada no valida");
-            return;
-        }
-
-        boolean encontrado = historial.contains(busqueda);
-        if (!encontrado) {
-            System.out.println("No se encontro: " + busqueda);
-            return;
-        }
-
-        System.out.println("Se encontro en el historial: " + busqueda);
-        System.out.print("¿Deseas entrar a este sitio? (s/n): ");
-        String decision = scan.nextLine().trim().toLowerCase();
-
-        if (decision.equals("s")) {
-            historial.push(busqueda);
-            System.out.println("Entraste al sitio: " + busqueda);
-        } else {
-            if (historial.isEmpty()) {
-                System.out.println("No hay sitio actual");
-            } else {
-                System.out.println("Sigues en el sitio actual: " + historial.peek());
+        
+        while (!auxiliar.isEmpty()) {
+            int actual = auxiliar.pop();
+            
+            boolean duplicado = false;
+            Stack<Integer> temp = new Stack<>();
+            
+            while (!unicos.isEmpty()) {
+                int elemento = unicos.pop();
+                if (elemento == actual) {
+                    duplicado = true;
+                }
+                temp.push(elemento);
+            }
+            
+            while (!temp.isEmpty()) {
+                unicos.push(temp.pop());
+            }
+            
+            if (!duplicado) {
+                unicos.push(actual);
             }
         }
-    }
-
-    private static void mostrarActualYCantidad() {
-        if (historial.isEmpty()) {
-            System.out.println("Historial vacio");
-            System.out.println("Numero de sitios visitados: 0");
-        } else {
-            System.out.println("Sitio actual: " + historial.peek());
-            System.out.println("Numero de sitios visitados: " + historial.size());
+        
+        while (!unicos.isEmpty()) {
+        	numeros.push(unicos.pop());
         }
+        
+        System.out.println("Duplicados eliminados");
+        System.out.println("Stack: "+numeros);
     }
-
     
     public static void main(String[] args) {
-        boolean navegando = true;
 
-        while (navegando) {
-            mostrarEncabezado();
-            mostrarMenu();
-            String opcion = scan.nextLine().trim();
-            navegando = procesarOpcion(opcion);
-        }
+        Stack<Integer> numeros= new Stack<>();
+        Scanner scan = new Scanner(System.in);
+        boolean exit = true;
+        do {
+            System.out.println("1. Agregar un numero al Stack");
+            System.out.println("2. Encontrar el numero maximo y el numero minimo");
+            System.out.println("3. Sumar los elementos del Stack");
+            System.out.println("4. Verficar si hay un elemento en el Stack");
+            System.out.println("5. Eliminar elementos duplicados");
+            System.out.println("6. Exit");
+            int option = scan.nextInt();
+            switch(option) {
+            case 1:
+                llenarStack(numeros,scan);
+                System.out.println("Size: "+numeros.size());
+                break;
+            case 2:
+            	System.out.println("El numero maximo del Stack: " + encontrarMaximo(numeros));
+            	System.out.println("El numero minimo del Stack: " + encontrarMinimo(numeros));
+                break;
 
-        scan.close();
+            case 3:
+            	System.out.println("Total de la suma: " + sumarElementos(numeros));
+                break;
+                
+            case 4:
+            	buscarElemento(numeros, scan);
+                break;
+                
+            case 5:
+            	
+            	eliminarDuplicados(numeros);
+                break;
+            case 6:
+                exit = false;
+                System.out.println("Cerrando Programa...");
+                System.out.println("¡Adios!");
+                break;
+            }
+
+
+        }while(exit);
+
     }
+
 }
